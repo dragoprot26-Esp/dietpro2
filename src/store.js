@@ -88,7 +88,9 @@ const Store = (() => {
       const lic = rows[0];
       if (!lic.activa) return null;
       if (lic.fecha_vencimiento && new Date(lic.fecha_vencimiento) < new Date()) return null;
-      if (!lic.app_id || lic.app_id !== 'DIET') return null;
+      // Acepta app_id='DIET' (campo nuevo) O app_destino='dietpro' (campo legacy del panel admin)
+      const isForDiet = (lic.app_id === 'DIET') || (lic.app_destino === 'dietpro');
+      if (!isForDiet) return null;
       return lic;
     },
 
