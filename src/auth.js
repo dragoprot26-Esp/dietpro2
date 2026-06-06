@@ -28,7 +28,7 @@ const Auth = (() => {
     const passEl    = document.getElementById('login-pass');
     const btn       = document.getElementById('login-btn');
 
-    const license = (licenseEl.value || '').trim().toUpperCase();
+    const license = (licenseEl?.value || document.getElementById('license-badge-text')?.dataset?.code || '').trim().toUpperCase();
     const username = (userEl.value || '').trim().toLowerCase();
     const password = (passEl.value || '').trim();
 
@@ -83,10 +83,20 @@ const Auth = (() => {
         return;
       }
 
-      // 3. Guardar session
+      // 3. Guardar session (respetar checkbox recordar)
       Store.setUser(userData);
+      if (licenseEl) {
+        const badgeText = document.getElementById('license-badge-text');
+        if (badgeText) badgeText.dataset.code = license;
+      }
+
+      const remember = document.getElementById('remember-check')?.checked !== false;
       try {
-        localStorage.setItem('dp_session', JSON.stringify({ license, username, password, ts: Date.now() }));
+        if (remember) {
+          localStorage.setItem('dp_session', JSON.stringify({ license, username, password, ts: Date.now() }));
+        } else {
+          sessionStorage.setItem('dp_session', JSON.stringify({ license, username, password, ts: Date.now() }));
+        }
       } catch(e) {}
 
       // 4. Cargar config y arrancar
@@ -117,7 +127,7 @@ const Auth = (() => {
 
   async function tryAutoLogin() {
     try {
-      const saved = JSON.parse(localStorage.getItem('dp_session') || 'null');
+      const saved = JSON.parse(localStorage.getItem('dp_session') || sessionStorage.getItem('dp_session') || 'null');
       if (!saved) { showLogin(); return; }
       // Session válida por 8 horas
       if (Date.now() - saved.ts > 8 * 60 * 60 * 1000) { showLogin(); return; }
@@ -178,5 +188,18 @@ const Auth = (() => {
     }
   });
 
-  return { login, logout, tryAutoLogin };
+  function demoMode() {
+    Store.reset();
+    // Cargar datos de demostración sin Supabase
+    Store.setTenant('DEMO-LOCAL-2026');
+    Store.setUser({ name: 'Demo Admin', username: 'demo', role: 'admin' });
+    // Config mínima
+    Store._state = Store.getState();
+    Store.getState().config = { name: 'Mi Dietética Demo', theme: 'dark-green' };
+    showApp();
+    App.go('dashboard');
+    if (typeof App !== 'undefined') App.toast('Modo prueba activo — datos de demostración', 'info', 4000);
+  }
+
+  return { login, logout, tryAutoLogin, demoMode };
 })();
