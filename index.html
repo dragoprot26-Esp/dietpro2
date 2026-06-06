@@ -7,9 +7,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>DietPro</title>
-  <link rel="manifest" href="/manifest.json">
-  <link rel="icon" type="image/png" href="/icons/icon-192.png">
-  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
 
   <style>
     /* ── SISTEMA DE TEMAS ────────────────────────────────────── */
@@ -97,35 +97,110 @@
       background: var(--bg);
       align-items: center; justify-content: center;
       flex-direction: column;
-      padding: 24px;
+      padding: 20px;
     }
     .login-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 20px;
-      padding: 32px 28px;
+      padding: 28px 24px;
       width: 100%; max-width: 380px;
     }
-    .login-logo { font-size: 44px; text-align: center; margin-bottom: 4px; }
-    .login-title { font-size: 22px; font-weight: 800; color: var(--primary); text-align: center; margin-bottom: 2px; }
-    .login-sub { font-size: 13px; color: var(--text-2); text-align: center; margin-bottom: 24px; }
-    .form-group { margin-bottom: 14px; }
-    .form-label { font-size: 12px; font-weight: 600; color: var(--text-2); margin-bottom: 6px; display: block; text-transform: uppercase; letter-spacing: 0.5px; }
+    /* Brand header */
+    .login-brand {
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 20px;
+    }
+    .login-brand-icon {
+      width: 56px; height: 56px; border-radius: 14px;
+      background: var(--primary); display: flex;
+      align-items: center; justify-content: center;
+      font-size: 28px; flex-shrink: 0;
+    }
+    .login-brand-text {}
+    .login-title { font-size: 22px; font-weight: 800; color: var(--text); line-height: 1.1; }
+    .login-sub { font-size: 13px; color: var(--text-2); margin-top: 2px; }
+
+    /* License badge */
+    .license-badge {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 14px;
+      background: rgba(46,204,113,0.08);
+      border: 1.5px solid var(--primary);
+      border-radius: 10px; margin-bottom: 18px;
+      font-size: 13px; font-weight: 600; color: var(--primary);
+      cursor: pointer; transition: background 0.2s;
+      position: relative;
+    }
+    .license-badge.empty {
+      background: var(--surface2);
+      border-color: var(--border);
+      color: var(--text-2);
+    }
+    .license-badge-icons { display: flex; gap: 2px; }
+    .license-badge-text { flex: 1; }
+    .license-badge-arrow { margin-left: auto; font-size: 12px; transition: transform 0.2s; }
+    .license-badge.open .license-badge-arrow { transform: rotate(180deg); }
+    .license-input-wrap { display: none; margin-top: 10px; }
+    .license-input-wrap.open { display: block; }
+
+    /* Role toggle */
+    .role-toggle {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0; margin-bottom: 18px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px; padding: 4px;
+    }
+    .role-btn {
+      padding: 9px 10px; border: none; border-radius: 8px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      background: transparent; color: var(--text-2);
+      transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .role-btn.active {
+      background: var(--primary);
+      color: #0f1117;
+    }
+    .role-btn:not(.active):hover { color: var(--text); }
+
+    /* Form */
+    .form-group { margin-bottom: 13px; }
+    .form-label { font-size: 11px; font-weight: 700; color: var(--text-2); margin-bottom: 6px; display: block; text-transform: uppercase; letter-spacing: 0.6px; }
     .form-input {
-      width: 100%; padding: 12px 14px;
+      width: 100%; padding: 11px 14px;
       background: var(--surface2); border: 1.5px solid var(--border);
       border-radius: var(--radius); color: var(--text);
       font-size: 15px; transition: border-color 0.2s;
       outline: none;
     }
     .form-input:focus { border-color: var(--primary); }
+    .input-wrap { position: relative; }
+    .input-wrap .form-input { padding-right: 44px; }
+    .input-eye {
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer;
+      color: var(--text-2); font-size: 18px; padding: 4px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* Remember me */
+    .remember-row {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 14px;
+    }
+    .remember-row input[type="checkbox"] {
+      width: 16px; height: 16px; accent-color: var(--primary); cursor: pointer;
+    }
+    .remember-row label { font-size: 13px; color: var(--text-2); cursor: pointer; }
+
     .btn-primary {
-      width: 100%; padding: 14px;
+      width: 100%; padding: 13px;
       background: var(--primary); color: #0f1117;
       border: none; border-radius: var(--radius);
       font-size: 15px; font-weight: 700; cursor: pointer;
       transition: background 0.2s, transform 0.1s;
-      margin-top: 6px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
     }
     .btn-primary:active { transform: scale(0.98); }
     .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -134,9 +209,20 @@
       border: 1px solid rgba(231,76,60,0.3);
       color: #E74C3C; border-radius: 8px;
       padding: 10px 12px; font-size: 13px;
-      margin-top: 12px; display: none;
+      margin-top: 10px; display: none;
     }
-    .login-powered { font-size: 11px; color: var(--text-2); text-align: center; margin-top: 20px; }
+
+    /* Demo mode */
+    .demo-btn {
+      width: 100%; margin-top: 12px;
+      padding: 10px;
+      background: none; border: 1px dashed var(--border);
+      border-radius: var(--radius); color: var(--text-2);
+      font-size: 12px; cursor: pointer;
+      transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .demo-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .login-powered { font-size: 11px; color: var(--text-2); text-align: center; margin-top: 16px; }
 
     /* ── APP SHELL ───────────────────────────────────────────── */
     #app {
@@ -442,27 +528,129 @@
 <!-- ── LOGIN ── -->
 <div id="login-screen">
   <div class="login-card">
-    <div class="login-logo">🥦</div>
-    <div class="login-title">DietPro</div>
-    <div class="login-sub">Ingresá a tu dietetica</div>
 
-    <div class="form-group">
-      <label class="form-label">Código de licencia</label>
-      <input id="login-license" class="form-input" type="text" placeholder="DIET-0001-2026-XXXX" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false">
+    <!-- Brand -->
+    <div class="login-brand">
+      <div class="login-brand-icon">🥦</div>
+      <div class="login-brand-text">
+        <div class="login-title">DietPro</div>
+        <div class="login-sub">Sistema de Gestión de Dietética</div>
+      </div>
     </div>
+
+    <!-- License badge / toggle -->
+    <div class="license-badge empty" id="license-badge" onclick="toggleLicenseInput()">
+      <div class="license-badge-icons" id="license-status-icons">🔑</div>
+      <span class="license-badge-text" id="license-badge-text">Tengo un código de licencia</span>
+      <span class="license-badge-arrow">▼</span>
+    </div>
+    <div class="license-input-wrap" id="license-input-wrap">
+      <input id="login-license" class="form-input" type="text"
+        placeholder="DIET-0001-2026-XXXX"
+        autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false"
+        oninput="validateLicenseInput(this)">
+    </div>
+
+    <!-- Role selector -->
+    <div class="role-toggle">
+      <button class="role-btn active" id="role-admin" onclick="setRole('admin')">
+        👤 Administrador
+      </button>
+      <button class="role-btn" id="role-collab" onclick="setRole('collaborator')">
+        🤝 Colaborador
+      </button>
+    </div>
+
+    <!-- Usuario -->
     <div class="form-group">
       <label class="form-label">Usuario</label>
-      <input id="login-user" class="form-input" type="text" placeholder="admin1" autocomplete="off">
+      <input id="login-user" class="form-input" type="text" placeholder="usuario" autocomplete="off">
     </div>
+
+    <!-- Contraseña -->
     <div class="form-group">
       <label class="form-label">Contraseña</label>
-      <input id="login-pass" class="form-input" type="password" placeholder="••••••••" autocomplete="off">
+      <div class="input-wrap">
+        <input id="login-pass" class="form-input" type="password" placeholder="••••••" autocomplete="off">
+        <button class="input-eye" onclick="togglePass()" type="button" title="Ver contraseña">👁</button>
+      </div>
     </div>
-    <button class="btn-primary" id="login-btn" onclick="Auth.login()">Ingresar</button>
+
+    <!-- Recordar sesión -->
+    <div class="remember-row">
+      <input type="checkbox" id="remember-check">
+      <label for="remember-check">Recordar sesión en este dispositivo</label>
+    </div>
+
+    <button class="btn-primary" id="login-btn" onclick="Auth.login()">
+      Ingresar →
+    </button>
     <div class="login-error" id="login-error"></div>
+
+    <!-- Modo prueba -->
+    <button class="demo-btn" onclick="Auth.demoMode()">
+      🖊 Modo Prueba (sin Supabase)
+    </button>
+
     <div class="login-powered">Powered by CyC Ecosystem</div>
   </div>
 </div>
+
+<script>
+// Helpers para el nuevo login
+function toggleLicenseInput() {
+  const wrap = document.getElementById('license-input-wrap');
+  const badge = document.getElementById('license-badge');
+  wrap.classList.toggle('open');
+  badge.classList.toggle('open');
+}
+
+function validateLicenseInput(el) {
+  const val = el.value.trim().toUpperCase();
+  el.value = val;
+  const badge = document.getElementById('license-badge');
+  const icons = document.getElementById('license-status-icons');
+  const text  = document.getElementById('license-badge-text');
+  if (val.startsWith('DIET') && val.length > 6) {
+    badge.classList.remove('empty');
+    icons.textContent = '✅ ✅';
+    text.textContent = 'Licencia: ' + val + ' (DEMO)';
+  } else if (val.length > 0) {
+    badge.classList.add('empty');
+    icons.textContent = '🔑';
+    text.textContent = val;
+  } else {
+    badge.classList.add('empty');
+    icons.textContent = '🔑';
+    text.textContent = 'Tengo un código de licencia';
+  }
+}
+
+function setRole(role) {
+  document.getElementById('role-admin').classList.toggle('active', role === 'admin');
+  document.getElementById('role-collab').classList.toggle('active', role === 'collaborator');
+}
+
+function togglePass() {
+  const inp = document.getElementById('login-pass');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+// Parche para demoMode si no existe en Auth
+if (typeof Auth !== 'undefined') {
+  if (!Auth.demoMode) Auth.demoMode = function() {
+    App.toast('Modo prueba activado — sin conexión a Supabase', 'info');
+  };
+}
+document.addEventListener('DOMContentLoaded', () => {
+  // Agregar demoMode si Auth ya cargó
+  setTimeout(() => {
+    if (typeof Auth !== 'undefined' && !Auth.demoMode) {
+      Auth.demoMode = () => App.toast?.('Modo prueba — sin Supabase', 'info');
+    }
+  }, 500);
+});
+</script>
 
 <!-- ── APP ── -->
 <div id="app">
@@ -551,17 +739,17 @@
 <!-- ══ SCRIPTS ══════════════════════════════════════════════ -->
 <script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
-<script src="/src/store.js"></script>
-<script src="/src/auth.js"></script>
-<script src="/src/scanner.js"></script>
-<script src="/src/notifications.js"></script>
-<script src="/src/views/dashboard.js"></script>
-<script src="/src/views/products.js"></script>
-<script src="/src/views/sales.js"></script>
-<script src="/src/views/stock.js"></script>
-<script src="/src/views/offers.js"></script>
-<script src="/src/views/settings.js"></script>
-<script src="/src/views/public-page.js"></script>
-<script src="/src/main.js"></script>
+<script src="src/store.js"></script>
+<script src="src/auth.js"></script>
+<script src="src/scanner.js"></script>
+<script src="src/notifications.js"></script>
+<script src="src/views/dashboard.js"></script>
+<script src="src/views/products.js"></script>
+<script src="src/views/sales.js"></script>
+<script src="src/views/stock.js"></script>
+<script src="src/views/offers.js"></script>
+<script src="src/views/settings.js"></script>
+<script src="src/views/public-page.js"></script>
+<script src="src/main.js"></script>
 </body>
 </html>
